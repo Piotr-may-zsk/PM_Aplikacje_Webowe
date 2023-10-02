@@ -2,7 +2,7 @@ const http = require('http')
 const fs = require('fs/promises')
 
 
-const port = 8080
+const port = 8081
 const host = "127.0.0.1"
 
 const server = http.createServer(async (req, res) => {
@@ -10,14 +10,14 @@ const server = http.createServer(async (req, res) => {
     const method = req.method ?? 'GET'
 
     if (url==='/'){
-        res.setHeader('Content-Type', 'text/html')
+        res.setHeader('content-type', 'text/html')
         res.statusCode = 200
         const html = await fs.readFile('index.html')
         res.write(html)
         res.end()
     }
     else if (url==='/dziekujemy'){
-        res.setHeader('Content-Type', 'text/html')
+        res.setHeader('content-type', 'text/html')
         res.statusCode = 200
         const html = await fs.readFile('thanks.html')
         res.write(html)
@@ -35,24 +35,30 @@ const server = http.createServer(async (req, res) => {
         const workers = [w1,w2,w3]
 
         res.statusCode = 200
-        res.setHeader('Content-Type', 'text/json')
+        res.setHeader('content-type', 'application/json')
         res.write(JSON.stringify(workers))
         res.end()
     }
-    else if (url==='kontakt' && method =='POST') {
+    else if (url==='/kontakt' && method =='POST') {
         const body = []
         req.on('data', (chunk) => {
             console.log(chunk.toString())
             body.push(chunk)
         })
-        res.statusCode = 202
-        res.write(body)
-        res.end()
+
+        req.on('end', async () => {
+            const parsedBody = Buffer.concat(body).toString()
+            const message = parsedBody.split('=')[1]
+            await fs.writeFile(`./contact/message-${Date.now().toString()}.txt`, message)
+            res.statusCode = 302
+            res.setHeader('Location', '/dziekujemy')
+            return res.end()
+        })
     }
     else {
         res.statusCode = 404
-        res.setHeader('Content-Type', 'text/json')
-        res.write('{error: 404}')
+        res.setHeader('content-type', 'application/json')
+        res.write('{"error": "404 this page does not exist"}')
         res.end()
     }
 })
