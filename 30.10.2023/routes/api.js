@@ -27,15 +27,12 @@ router.get('/students', (req, res)=> {
         database: "node",
         password: ''
     });
-    var students;
     con.connect(function(err) {
         if (err) throw err;
         con.query(Querrys.selectAllStudents, (e, result)=> {
             if (e) throw err;
 
-            students = JSON.parse(JSON.stringify(result));
-            res.setHeader('content-type', 'application/json');
-            res.json(students)
+            res.json(result)
         });
     });
 
@@ -43,42 +40,69 @@ router.get('/students', (req, res)=> {
 
 router.get('/students/:id', (req, res)=> {
     const id = parseInt(req.params.id)
-    var result;
-    for (var i = 0; i < students.length; i++){
-        // look for the entry with a matching `code` value
-        if (students[i].id === id){
-            result = students[i]
-        }
-    }
-    if (result !== []) {
-        res.json(result)
-    }
-    else {
-        res.statusCode = 404
-        res.send('not found')
-    }
+    var con = mysql.createConnection({
+        host: "127.0.0.1",
+        user: "root",
+        database: "node",
+        password: ''
+    });
+    con.connect(function(err) {
+        if (err) throw err;
+        con.query(Querrys.selectStudentById(id), (e, result)=> {
+            if (e) throw err;
+
+            if (result.length !==0) {
+                res.json(result)
+            }
+            else {
+                res.statusCode = 404
+                res.send('not found')
+            }
+        });
+    });
+
 })
 
 router.get('/subjects', (req, res)=> {
-    res.json(subjects)
+    var con = mysql.createConnection({
+        host: "127.0.0.1",
+        user: "root",
+        database: "node",
+        password: ''
+    });
+    con.connect(function(err) {
+        if (err) throw err;
+        con.query(Querrys.selectAllSubjects, (e, result)=> {
+            if (e) throw err;
+
+            res.json(result)
+        });
+    });
 })
 
 router.get('/subjects/:id', (req, res)=> {
     const id = parseInt(req.params.id)
-    var result;
-    for (var i = 0; i < students.length; i++){
-        // look for the entry with a matching `code` value
-        if (subjects[i].id === id){
-            result = subjects[i]
-        }
-    }
-    if (result !== []) {
-        res.json(result)
-    }
-    else {
-        res.statusCode = 404
-        res.send('not found')
-    }
+    var con = mysql.createConnection({
+        host: "127.0.0.1",
+        user: "root",
+        database: "node",
+        password: ''
+    });
+    con.connect(function(err) {
+        if (err) throw err;
+        con.query(Querrys.selectSubjectById(id), (e, result)=> {
+            if (e) throw err;
+
+            if (result.length !==0)  {
+                res.json(result)
+            }
+            else {
+                res.statusCode = 404
+                res.send('not found')
+            }
+        });
+    });
+
 })
 
 module.exports = router;
