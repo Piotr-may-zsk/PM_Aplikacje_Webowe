@@ -1,0 +1,6 @@
+{
+  "/api/students": "zwraca listę minimum 10 obiektów o strukturze {id: number, name: string, surname: string, email: string}",
+  "/api/students/:id": "zwraca listę minimum 10 obiektów o strukturze {id: number, name: string, surname: string, email: string}",
+  "/api/subjects": "zwraca listę minimum 10 przedmiotów szkolnych w formacie {id: number, name: string, hoursAWeek: number}",
+  "/api/subjects/:id": "zwraca przedmiot z określonym identyfikatorem lub 404"
+}
