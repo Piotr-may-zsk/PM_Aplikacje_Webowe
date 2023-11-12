@@ -3,7 +3,10 @@ var router = express.Router();
 const Student = require('../objects/student')
 const Subject = require('../objects/subject')
 const Querrys = require('../querrys/querrys.js')
-const data = require('../public/json/api.json')
+const apitDocumentatiob = require('../public/json/api.json')
+const prismaClient = require("@prisma/client");
+const prisma = new prismaClient.PrismaClient()
+
 /* GET home page. */
 const mysql = require('mysql')
 // const students = []
@@ -17,91 +20,49 @@ const mysql = require('mysql')
 // }
 router.get('/', async (req, res, next) => {
 
-    res.json(data);
+    res.json(apitDocumentatiob);
 });
 
-router.get('/students', (req, res)=> {
-    var con = mysql.createConnection({
-        host: "127.0.0.1",
-        user: "root",
-        database: "node",
-        password: ''
-    });
-    con.connect(function(err) {
-        if (err) throw err;
-        con.query(Querrys.selectAllStudents, (e, result)=> {
-            if (e) throw err;
-
-            res.json(result)
-        });
-    });
-
+router.get('/students', async (req, res)=> {
+    const students = await prisma.students.findMany()
+    res.json(students);
 })
 
-router.get('/students/:id', (req, res)=> {
+router.get('/students/:id', async(req, res)=> {
     const id = parseInt(req.params.id)
-    var con = mysql.createConnection({
-        host: "127.0.0.1",
-        user: "root",
-        database: "node",
-        password: ''
-    });
-    con.connect(function(err) {
-        if (err) throw err;
-        con.query(Querrys.selectStudentById(id), (e, result)=> {
-            if (e) throw err;
+    const student = await prisma.students.findFirst({
+        where: {
+            id: id
+        }
+    })
+    if (student === null) {
+        res.status(404)
+        res.send('not found')
+    } else {
+        res.json(student);
 
-            if (result.length !==0) {
-                res.json(result)
-            }
-            else {
-                res.statusCode = 404
-                res.send('not found')
-            }
-        });
-    });
-
+    }
 })
 
-router.get('/subjects', (req, res)=> {
-    var con = mysql.createConnection({
-        host: "127.0.0.1",
-        user: "root",
-        database: "node",
-        password: ''
-    });
-    con.connect(function(err) {
-        if (err) throw err;
-        con.query(Querrys.selectAllSubjects, (e, result)=> {
-            if (e) throw err;
-
-            res.json(result)
-        });
-    });
+router.get('/subjects', async (req, res)=> {
+    const subjects = await prisma.subjects.findMany()
+    res.json(subjects);
 })
 
-router.get('/subjects/:id', (req, res)=> {
+router.get('/subjects/:id', async (req, res)=> {
     const id = parseInt(req.params.id)
-    var con = mysql.createConnection({
-        host: "127.0.0.1",
-        user: "root",
-        database: "node",
-        password: ''
-    });
-    con.connect(function(err) {
-        if (err) throw err;
-        con.query(Querrys.selectSubjectById(id), (e, result)=> {
-            if (e) throw err;
+    const subject = await prisma.subjects.findFirst({
+        where: {
+            id: id
+        }
+    })
+    if (subject === null) {
+        res.status(404)
+        res.send('not found')
+    } else {
+        res.json(subject);
 
-            if (result.length !==0)  {
-                res.json(result)
-            }
-            else {
-                res.statusCode = 404
-                res.send('not found')
-            }
-        });
-    });
+    }
 
 })
 
