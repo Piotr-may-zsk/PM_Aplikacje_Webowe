@@ -1,118 +1,45 @@
 import express from "express";
-import {AppDataSource} from "../data";
-import {User} from "../entity/User";
-import {AccountData} from "../entity/AccountData";
-import {Event} from "../entity/Event";
-import {Image} from "../entity/Image";
-import {Post} from "../entity/Post";
+import {createPost, deletePost, getAllPosts, getPost} from "./api/posts";
+import {updateObject} from "../heplers/updateObjectHelper";
+import {getAllUsers, getUser, createUser, deleteUser, patchUser} from "./api/users";
+import {createAccountData, getAccountData, getAllAccountData, deleteAccountData, patchAccountData} from "./api/accountData";
+import {getAllImages, getImage, createImage, patchImage, deleteImage} from "./api/images";
+import {getAllEvents, getEvent, patchEvent, deleteEvent, createEvent} from "./api/events";
 
-const port = 3000
 const router = express.Router()
+
 router.get('/', async (req, res, next) => {
-
-
     res.json({'api': 'working'});
 });
 
-router.get('/users', async (req, res, next) => {
-    AppDataSource.initialize()
-        .then(async () => {
-            const result = await AppDataSource.manager.find(User)
-            res.json(result)
-        })
-        .catch((error) => console.log(error));
-})
-router.get('/users/:id', async (req, res, next) => {
-    const userId : number= parseInt(req.params.id)
-    AppDataSource.initialize()
-        .then(async () => {
-            const userRepository = AppDataSource.getRepository(User)
-            const result = await userRepository.findOneBy({id: userId})
-            res.json(result)
-        })
-        .catch((error) => console.log(error));
-})
-router.patch('/users/:id', async (req, res, next) => {
-    const userId : number= parseInt(req.params.id)
-    const body = req.body
-    AppDataSource.initialize()
-        .then(async () => {
-            const userRepository = AppDataSource.getRepository(User)
-            const result : User | null = await userRepository.findOneBy({id: userId})
-            if (result !== null){
-                Object.entries(body).forEach(
-                    ([key, value]) => {
-                        if (result[key]!== undefined){
-                            result[key] = value
-                        }
-                    }
-                );
+router.get('/posts/', getAllPosts)
+router.get('/posts/:id', getPost)
+router.post('/posts/:id', createPost)
+router.patch('/posts/:id', updateObject)
+router.delete('/posts/:id', deletePost)
 
-                await  userRepository.save(result)
-                res.json({"succeded": true})
-            }
+router.get('/users/', getAllUsers)
+router.get('/users/:id', getUser)
+router.post('/users/:id', createUser)
+router.patch('/users/:id', patchUser)
+router.delete('/users/:id', deleteUser)
 
-        })
-        .catch((error) => console.log(error));
-})
-router.delete('/users/:id', async (req, res, next) => {
-    const userId : number= parseInt(req.params.id)
-    AppDataSource.initialize()
-        .then(async () => {
-            const userRepository = AppDataSource.getRepository(User)
-            const result =  await userRepository.findOneBy({id: userId})
-            if (result !== null) {
-                await  userRepository.remove(result)
-                res.json({"succeded": true})
-            }
+router.get('/accountdata/', getAllAccountData)
+router.get('/accountdata/:id', getAccountData)
+router.post('/accountdata/:id', createAccountData)
+router.patch('/accountdata/:id', patchAccountData)
+router.delete('/accountdata/:id', deleteAccountData)
 
-        })
-        .catch((error) => console.log(error));
-})
-router.get('/accountData', async (req, res, next) => {
-    AppDataSource.initialize()
-        .then(async () => {
-            const result = await AppDataSource.manager.find(AccountData)
-            res.json(result)
-        })
-        .catch((error) => console.log(error));
-})
+router.get('/images/', getAllImages)
+router.get('/images/:id', getImage)
+router.post('/images/:id', createImage)
+router.patch('/images/:id', patchImage)
+router.delete('/images/:id', deleteImage)
 
-router.get('/posts', async (req, res, next) => {
-    AppDataSource.initialize()
-        .then(async () => {
-            const result = await AppDataSource.manager.find(Post)
-            res.json(result)
-        })
-        .catch((error) => console.log(error));
-})
-
-router.get('/images', async (req, res, next) => {
-    AppDataSource.initialize()
-        .then(async () => {
-            const result = await AppDataSource.manager.find(Image)
-            res.json(result)
-        })
-        .catch((error) => console.log(error));
-})
-
-router.get('/events', async (req, res, next) => {
-    AppDataSource.initialize()
-        .then(async () => {
-            const result = await AppDataSource.manager.find(Event)
-            res.json(result)
-        })
-        .catch((error) => console.log(error));
-})
-
-router.get('/users', async (req, res, next) => {
-    AppDataSource.initialize()
-        .then(async () => {
-            const result = await AppDataSource.manager.find(User)
-            res.json(result)
-        })
-        .catch((error) => console.log(error));
-})
-
+router.get('/events/', getAllEvents)
+router.get('/events/:id', getEvent)
+router.post('/events/:id', createEvent)
+router.patch('/events/:id', patchEvent)
+router.delete('/events/:id', deleteEvent)
 
 export {router};
