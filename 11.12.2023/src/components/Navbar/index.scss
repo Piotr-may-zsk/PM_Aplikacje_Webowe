@@ -1,0 +1,16 @@
+nav {
+  background-color: aqua;
+  border-bottom: 1px solid red;
+  padding: 5px;
+  ul {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    li {
+      padding: 20px 20px;
+    }
+    li:hover {
+      background-color: red;
+    }
+  }
+}
