@@ -1,0 +1,12 @@
+form {
+  display: flex;
+  flex-direction: column;
+  width: 35%;
+  input, button, textarea {
+    padding: 5px;
+    border-radius: 10px;
+    margin: 5px;
+    font-size: 1.2em;
+    font-family: sans-serif;
+  }
+}
