@@ -1,82 +1,67 @@
 import express from "express";
-import {AppDataSource} from "../../data";
-import {Event} from "../../entity/Event";
-import {AccountData} from "../../entity/AccountData";
-import {User} from "../../entity/User";
-import {updateObject} from "../../heplers/updateObjectHelper";
 import {Request, Response, NextFunction} from "express";
+import { PrismaClient } from '@prisma/client'
 
+const prisma = new PrismaClient()
 const router = express.Router()
 
 async function  getAllEvents(req: Request, res:Response, next:NextFunction) {
-    AppDataSource.initialize()
-        .then(async () => {
-            const result = await AppDataSource.manager.find(Event)
-            res.json(result)
-            await AppDataSource.destroy();
-
-        })
-        .catch((error) => console.log(error));
+    const events = await prisma.event.findMany()
+    res.json(events);
 }
 async function  createEvent (req: Request, res:Response, next:NextFunction)  {
     const body = req.body
-    AppDataSource.initialize()
-        .then(async () => {
-            const event = new Event();
-            event.date = body.date
-            event.name = body.name
-            event.location = body.location
-            await AppDataSource.manager.save(event)
-
-            res.json({"succes": "yes"})
-            await AppDataSource.destroy();
-
-        })
-        .catch((error) => console.log(error));
+    const newEvent = await prisma.event.create({
+        data: {
+            date: body.date,
+            name: body.name,
+            location: body.location
+        },
+    })
+    res.json({"succes": "yes"})
 }
 async function  getEvent (req: Request, res:Response, next:NextFunction) {
     const eventId : number= parseInt(req.params.id)
-    AppDataSource.initialize()
-        .then(async () => {
-            const eventRepository = AppDataSource.getRepository(Event)
-            const result = await eventRepository.findOneBy({id: eventId})
-            res.json(result)
-            await AppDataSource.destroy();
-
-        })
-        .catch((error) => console.log(error));
+    const event = await prisma.event.findFirst({
+        where: {
+            id: eventId
+        }
+    })
+    if (event === null) {
+        res.status(404)
+        res.send('not found')
+    } else {
+        res.json(event);
+    }
 }
 async function  patchEvent (req: Request, res:Response, next:NextFunction)  {
     const eventId : number= parseInt(req.params.id)
     const body = req.body
-    AppDataSource.initialize()
-        .then(async () => {
-            const eventRepository = AppDataSource.getRepository(Event)
-            let result : Event | null = await eventRepository.findOneBy({id: eventId})
-            if (result !== null){
-                result = updateObject(result, body)
-                //@ts-ignore
-                await  eventRepository.save(result)
-                res.json({"succeded": true})
-            }
-            await AppDataSource.destroy();
-
+    const notUpdated = await prisma.event.findFirst({
+        where: {
+            id: eventId
+        }
+    })
+    if (notUpdated !== null) {
+        const updateAccount = await prisma.event.update({
+            where: {
+                id: eventId,
+            },
+            data: {
+                date: body.date ?? notUpdated.date,
+                name: body.name ?? notUpdated.name,
+                location: body.location ?? notUpdated.location
+            },
         })
-        .catch((error) => console.log(error));
+    }
+
 }
 async function  deleteEvent(req: Request, res:Response, next:NextFunction){
     const eventId : number= parseInt(req.params.id)
-    AppDataSource.initialize()
-        .then(async () => {
-            const eventRepository = AppDataSource.getRepository(Event)
-            const result =  await eventRepository.findOneBy({id: eventId})
-            if (result !== null) {
-                await  eventRepository.remove(result)
-                res.json({"succeded": true})
-            }
-            await AppDataSource.destroy();
-
-        })
-        .catch((error) => console.log(error));
+    const deleteEvent = await prisma.event.delete({
+        where: {
+            id: eventId,
+        },
+    })
 }
 export {getEvent,getAllEvents,deleteEvent,patchEvent,createEvent};

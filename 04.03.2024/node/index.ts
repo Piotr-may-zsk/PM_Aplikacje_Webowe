@@ -1,8 +1,6 @@
 import express, { Express, Request, Response } from 'express';
 import {router as APIRouter}  from './routes/api'
 import {router as API2Router}  from './routes/api2'
-import {AppDataSource} from "./data";
-import {User} from "./entity/User";
 import bodyParser from 'body-parser';
 
 const app: Express = express();

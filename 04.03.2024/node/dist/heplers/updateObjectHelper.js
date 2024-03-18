@@ -2,8 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.updateObject = void 0;
 function updateObject(object, data) {
-    Object.entries(data).forEach(function (_a) {
-        var key = _a[0], value = _a[1];
+    Object.entries(data).forEach(([key, value]) => {
         //@ts-ignore
         if (object[key] !== undefined) {
             //@ts-ignore

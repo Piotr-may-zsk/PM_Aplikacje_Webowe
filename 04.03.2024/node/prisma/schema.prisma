@@ -7,15 +7,9 @@ generator client {
   provider = "prisma-client-js"
 }
 
-model AccountData {
-  id        Int      @id @default(autoincrement())
-  createdAt DateTime @default(now())
-  address   String?
-  bio       String?
-}
-
 model User {
   id            Int             @id @default(autoincrement())
+  accountData   AccountData?
   createdAt     DateTime        @default(now())
   email         String          @unique
   name          String?
@@ -23,10 +17,19 @@ model User {
   Post          Post[]
 }
 
+model AccountData {
+  id        Int      @id @default(autoincrement())
+  user      User     @relation(fields: [userId], references: [id])
+  userId    Int      @unique
+  createdAt DateTime @default(now())
+  address   String?
+  bio       String?
+}
+
 model Event {
   id            Int             @id @default(autoincrement())
   date          DateTime
-  name          String
+  name          String?
   location      String?
   UsersOnEvents UsersOnEvents[]
 }
@@ -47,12 +50,13 @@ model Image {
   Post Post[]
 }
 
+// not null image and user for tests
 model Post {
   id      Int    @id @default(autoincrement())
   title   String
   content String
-  owner   User   @relation(fields: [ownerId], references: [id])
+  owner   User?  @relation(fields: [ownerId], references: [id])
   ownerId Int
-  image   Image  @relation(fields: [imageId], references: [id])
+  image   Image? @relation(fields: [imageId], references: [id])
   imageId Int
 }

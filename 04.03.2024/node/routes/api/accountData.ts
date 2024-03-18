@@ -1,12 +1,11 @@
 import { PrismaClient } from '@prisma/client'
 
-const prisma = new PrismaClient()
 
 import express from "express";
 
-import {updateObject} from "../../heplers/updateObjectHelper";
 import {Request, Response, NextFunction} from "express";
 const router = express.Router()
+const prisma = new PrismaClient()
 
 async function getAllAccountData (req:Request, res:Response, next:NextFunction) {
     const userData = await prisma.accountData.findMany()
@@ -17,9 +16,12 @@ async function createAccountData(req:Request, res:Response, next:NextFunction) {
     const body = req.body
     const newUser = await prisma.accountData.create({
         data: {
-            createdAt: new Date(),
             address: body.address,
-            bio: body.bio
+            bio: body.bio,
+            user:
+                {
+                    connect:  {id: body.userId}
+                }
         },
     })
     res.json({"succes": "yes"})
@@ -27,50 +29,45 @@ async function createAccountData(req:Request, res:Response, next:NextFunction) {
 }
 async function getAccountData (req:Request, res:Response, next:NextFunction) {
     const acccountID : number= parseInt(req.params.id)
-    const student = await prisma.accountData.findFirst({
+    const accountData = await prisma.accountData.findFirst({
         where: {
             id: acccountID
         }
     })
-    if (student === null) {
+    if (accountData === null) {
         res.status(404)
         res.send('not found')
     } else {
-        res.json(student);
+        res.json(accountData);
     }
 }
 async function patchAccountData(req:Request, res:Response, next:NextFunction)  {
     const acccountID : number= parseInt(req.params.id)
     const body = req.body
-    AppDataSource.initialize()
-        .then(async () => {
-            const accountRepository = AppDataSource.getRepository(AccountData)
-            let result : AccountData | null = await accountRepository.findOneBy({id: acccountID})
-            if (result !== null){
-                result = updateObject(result, body)
-                //@ts-ignore
-                await  accountRepository.save(result)
-                res.json({"succeded": true})
-            }
-            await AppDataSource.destroy();
-
+    const notUpdated = await prisma.accountData.findFirst({
+        where: {
+            id: acccountID
+        }
+    })
+    if (notUpdated !== null) {
+        const updateAccount = await prisma.accountData.update({
+            where: {
+                id: acccountID,
+            },
+            data: {
+                address:  body.address ?? notUpdated.address,
+                bio: body.bio ??  notUpdated.bio
+            },
         })
-        .catch((error) => console.log(error));
+    }
 }
 async function deleteAccountData(req:Request, res:Response, next:NextFunction)  {
     const acccountID : number= parseInt(req.params.id)
-    AppDataSource.initialize()
-        .then(async () => {
-            const accountRepository = AppDataSource.getRepository(AccountData)
-            const result =  await accountRepository.findOneBy({id: acccountID})
-            if (result !== null) {
-                await  accountRepository.remove(result)
-                res.json({"succeded": true})
-            }
-            await AppDataSource.destroy();
-
-        })
-        .catch((error) => console.log(error));
+    const deleteAccountData = await prisma.accountData.delete({
+        where: {
+            id: acccountID,
+        },
+    })
 }
 
 

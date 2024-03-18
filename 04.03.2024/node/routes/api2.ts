@@ -27,7 +27,7 @@ router.post('/', async (req:express.Request, res: Response, next) => {
             throw e
         }
         await db.close()
-    } catch (e) {
+    } catch (e) { 
         throw e
     }
 
