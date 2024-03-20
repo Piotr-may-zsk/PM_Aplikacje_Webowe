@@ -3,18 +3,20 @@ import { PrismaClient } from '@prisma/client'
 
 const prisma = new PrismaClient()
 async function getAllPosts(req:Request, res:Response, next:NextFunction){
+    res.setHeader('Access-Control-Allow-Origin', 'http://localhost:5173');
     const posts = await prisma.post.findMany()
     res.json(posts);
 }
 async function createPost (req:Request, res:Response, next:NextFunction)  {
+    res.setHeader('Access-Control-Allow-Origin', 'http://localhost:5173');
     const body = req.body
     const newPost = await prisma.post.create({
         data: {
-            title: body.name,
-            content: body.path,
+            title: body.title,
+            content: body.content,
             owner: {
                 connect:{
-                    id: body.userId
+                    id: body.ownerId
                 }
             },
             image:{
@@ -22,8 +24,10 @@ async function createPost (req:Request, res:Response, next:NextFunction)  {
             }
         },
     })
+    res.send('success')
 }
 async function getPost (req:Request, res:Response, next:NextFunction) {
+    res.setHeader('Access-Control-Allow-Origin', 'http://localhost:5173');
     const postId : number= parseInt(req.params.id)
     const post = await prisma.post.findFirst({
         where: {

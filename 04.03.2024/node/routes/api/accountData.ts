@@ -8,11 +8,13 @@ const router = express.Router()
 const prisma = new PrismaClient()
 
 async function getAllAccountData (req:Request, res:Response, next:NextFunction) {
+    res.setHeader('Access-Control-Allow-Origin', 'http://localhost:5173');
     const userData = await prisma.accountData.findMany()
     res.json(userData);
 }
 
 async function createAccountData(req:Request, res:Response, next:NextFunction) {
+    res.setHeader('Access-Control-Allow-Origin', 'http://localhost:5173');
     const body = req.body
     const newUser = await prisma.accountData.create({
         data: {
@@ -28,6 +30,7 @@ async function createAccountData(req:Request, res:Response, next:NextFunction) {
 
 }
 async function getAccountData (req:Request, res:Response, next:NextFunction) {
+    res.setHeader('Access-Control-Allow-Origin', 'http://localhost:5173');
     const acccountID : number= parseInt(req.params.id)
     const accountData = await prisma.accountData.findFirst({
         where: {

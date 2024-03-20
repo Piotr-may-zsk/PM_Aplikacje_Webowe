@@ -6,14 +6,16 @@ const prisma = new PrismaClient()
 const router = express.Router()
 
 async function  getAllEvents(req: Request, res:Response, next:NextFunction) {
+    res.setHeader('Access-Control-Allow-Origin', 'http://localhost:5173');
     const events = await prisma.event.findMany()
     res.json(events);
 }
 async function  createEvent (req: Request, res:Response, next:NextFunction)  {
+    res.setHeader('Access-Control-Allow-Origin', 'http://localhost:5173');
     const body = req.body
     const newEvent = await prisma.event.create({
         data: {
-            date: body.date,
+            date: new Date(body.date),
             name: body.name,
             location: body.location
         },
@@ -21,6 +23,7 @@ async function  createEvent (req: Request, res:Response, next:NextFunction)  {
     res.json({"succes": "yes"})
 }
 async function  getEvent (req: Request, res:Response, next:NextFunction) {
+    res.setHeader('Access-Control-Allow-Origin', 'http://localhost:5173');
     const eventId : number= parseInt(req.params.id)
     const event = await prisma.event.findFirst({
         where: {

@@ -3,20 +3,25 @@ import { PrismaClient } from '@prisma/client'
 
 const prisma = new PrismaClient()
 async function  getAllImages(req:Request, res:Response, next:NextFunction) {
+    res.setHeader('Access-Control-Allow-Origin', 'http://localhost:5173');
     const images = await prisma.image.findMany()
     res.json(images);
 }
 
 async function  createImage(req:Request, res:Response, next:NextFunction) {
+    res.setHeader('Access-Control-Allow-Origin', 'http://localhost:5173');
     const body = req.body
+    console.log(body)
     const newImage = await prisma.image.create({
         data: {
             name: body.name,
             path: body.path,
         },
     })
+    res.send('success')
 }
 async function  getImage(req:Request, res:Response, next:NextFunction){
+    res.setHeader('Access-Control-Allow-Origin', 'http://localhost:5173');
     const imageId : number= parseInt(req.params.id)
     const image = await prisma.image.findFirst({
         where: {

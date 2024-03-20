@@ -6,11 +6,13 @@ const prisma = new PrismaClient()
 
 
  async function  getAllUsers(req:Request, res:Response, next:NextFunction) {
+     res.setHeader('Access-Control-Allow-Origin', 'http://localhost:5173');
      const users = await prisma.user.findMany()
      res.json(users);
 }
 
 async function  createUser(req:Request, res:Response, next:NextFunction) {
+    res.setHeader('Access-Control-Allow-Origin', 'http://localhost:5173');
     const body = req.body
     console.log(body)
     const newUser = await prisma.user.create({
@@ -19,8 +21,10 @@ async function  createUser(req:Request, res:Response, next:NextFunction) {
             email: body.email,
         },
     })
+    res.send('success')
 }
 async function  getUser(req:Request, res:Response, next:NextFunction) {
+    res.setHeader('Access-Control-Allow-Origin', 'http://localhost:5173');
     const userId : number= parseInt(req.params.id)
     const user = await prisma.user.findFirst({
         where: {

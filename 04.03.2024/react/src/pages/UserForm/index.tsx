@@ -3,7 +3,7 @@ import Container from "../../components/Container";
 import Heading from "../../components/Heading";
 
 
-export class Users extends React.Component{
+export class UserForm extends React.Component{
     // @ts-expect-error becouse yes
     constructor(props) {
         super(props);
