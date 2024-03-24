@@ -1,16 +1,14 @@
 import Container from "../../components/Container";
 import Heading from "../../components/Heading";
-import {UserFormComponent} from "../../components/UserFormComponent";
+import {EventFormComponent} from "../../components/EventFormComponent";
 
 
 
-function UserForm(){
+export default function EventForm(){
     return(
         <Container>
             <Heading level={1} content={"Zaktualizuj, lub utwórz element"} />
-            <UserFormComponent />
+            <EventFormComponent />
         </Container>
     )
 }
-
-export default UserForm

@@ -1,16 +1,14 @@
 import Container from "../../components/Container";
 import Heading from "../../components/Heading";
-import {UserFormComponent} from "../../components/UserFormComponent";
+import {ImageFormComponent} from "../../components/ImageFormComponent";
 
 
 
-function UserForm(){
+export default function ImageDataForm(){
     return(
         <Container>
             <Heading level={1} content={"Zaktualizuj, lub utwórz element"} />
-            <UserFormComponent />
+            <ImageFormComponent />
         </Container>
     )
 }
-
-export default UserForm

@@ -1,10 +1,12 @@
 import Heading from "../../components/Heading";
 import {useEffect, useState} from "react";
+import "./index.css"
 interface DataFetcherProps {
     url: string;
     cols: string[];
+    dataType: string;
 }
-export default function DataFetcher({url, cols }: DataFetcherProps){
+export default function DataFetcher({url, cols, dataType }: DataFetcherProps){
     const [items, setItems] = useState<object[]>([])
     // const [error, setError] = useState<string|null>(null)
     useEffect(() => {
@@ -17,7 +19,7 @@ export default function DataFetcher({url, cols }: DataFetcherProps){
 
     return (
         <div>
-            <Heading content={'Blog'} />
+            <Heading content={dataType} />
             <table>
                 <tr>
                     {

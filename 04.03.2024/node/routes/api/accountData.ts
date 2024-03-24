@@ -43,6 +43,7 @@ async function getAccountData (req:Request, res:Response, next:NextFunction) {
     } else {
         res.json(accountData);
     }
+    res.json({"succes": "yes"})
 }
 async function patchAccountData(req:Request, res:Response, next:NextFunction)  {
     const acccountID : number= parseInt(req.params.id)
@@ -63,6 +64,7 @@ async function patchAccountData(req:Request, res:Response, next:NextFunction)  {
             },
         })
     }
+    res.json({"succes": "yes"})
 }
 async function deleteAccountData(req:Request, res:Response, next:NextFunction)  {
     const acccountID : number= parseInt(req.params.id)

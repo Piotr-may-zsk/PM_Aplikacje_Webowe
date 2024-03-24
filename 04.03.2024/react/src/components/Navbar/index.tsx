@@ -1,13 +1,9 @@
 import {Link} from "react-router-dom";
 import {routes} from "../../Helpers/routing.tsx";
-
+import "./index.css"
 export default function Navbar() {
     return (
-        <div id="app-nav">
-            <div className="navbar-brand">
-                App name
-            </div>
-            <nav>
+        <nav>
                 <ul className="navbar-nav">
                     {routes.map((route) => (
                         <li className={"nav-item"} key={route.path}>
@@ -15,7 +11,6 @@ export default function Navbar() {
                         </li>
                     ))}
                 </ul>
-            </nav>
-        </div>
+        </nav>
     )
 }

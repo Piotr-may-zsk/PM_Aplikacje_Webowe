@@ -24,7 +24,7 @@ async function createPost (req:Request, res:Response, next:NextFunction)  {
             }
         },
     })
-    res.send('success')
+    res.json({"success": "yes"})
 }
 async function getPost (req:Request, res:Response, next:NextFunction) {
     res.setHeader('Access-Control-Allow-Origin', 'http://localhost:5173');
@@ -60,7 +60,7 @@ async function  patchPost(req:Request, res:Response, next:NextFunction) {
             },
         })
     }
-
+    res.json({"success": "yes"})
 }
 async function deletePost(req:Request, res:Response, next:NextFunction) {
     const postId : number= parseInt(req.params.id)

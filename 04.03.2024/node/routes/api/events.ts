@@ -11,7 +11,6 @@ async function  getAllEvents(req: Request, res:Response, next:NextFunction) {
     res.json(events);
 }
 async function  createEvent (req: Request, res:Response, next:NextFunction)  {
-    res.setHeader('Access-Control-Allow-Origin', 'http://localhost:5173');
     const body = req.body
     const newEvent = await prisma.event.create({
         data: {
@@ -20,7 +19,7 @@ async function  createEvent (req: Request, res:Response, next:NextFunction)  {
             location: body.location
         },
     })
-    res.json({"succes": "yes"})
+    res.json({"success": "yes"})
 }
 async function  getEvent (req: Request, res:Response, next:NextFunction) {
     res.setHeader('Access-Control-Allow-Origin', 'http://localhost:5173');
@@ -36,6 +35,7 @@ async function  getEvent (req: Request, res:Response, next:NextFunction) {
     } else {
         res.json(event);
     }
+    res.json({"succes": "yes"})
 }
 async function  patchEvent (req: Request, res:Response, next:NextFunction)  {
     const eventId : number= parseInt(req.params.id)
@@ -57,7 +57,7 @@ async function  patchEvent (req: Request, res:Response, next:NextFunction)  {
             },
         })
     }
-
+    res.json({"success": "yes"})
 }
 async function  deleteEvent(req: Request, res:Response, next:NextFunction){
     const eventId : number= parseInt(req.params.id)

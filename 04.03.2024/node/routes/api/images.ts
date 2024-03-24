@@ -18,7 +18,7 @@ async function  createImage(req:Request, res:Response, next:NextFunction) {
             path: body.path,
         },
     })
-    res.send('success')
+    res.json({"success": "yes"})
 }
 async function  getImage(req:Request, res:Response, next:NextFunction){
     res.setHeader('Access-Control-Allow-Origin', 'http://localhost:5173');
@@ -34,6 +34,7 @@ async function  getImage(req:Request, res:Response, next:NextFunction){
     } else {
         res.json(image);
     }
+
 }
 async function  patchImage(req:Request, res:Response, next:NextFunction){
     const imageId : number= parseInt(req.params.id)
@@ -54,7 +55,7 @@ async function  patchImage(req:Request, res:Response, next:NextFunction){
             },
         })
     }
-
+    res.json({"success": "yes"})
 }
 async function  deleteImage(req:Request, res:Response, next:NextFunction){
     const imageId : number= parseInt(req.params.id)
